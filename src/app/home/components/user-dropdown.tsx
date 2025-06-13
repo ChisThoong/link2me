@@ -41,7 +41,7 @@ export default function UserDropdown({
   return (
     <div className="relative">
       <button onClick={() => setOpenMenu(!openMenu)}>
-        <AvatarInitials email={email} className="w-8 h-8" />
+        <AvatarInitials email={email} className="w-10 h-10" />
       </button>
 
       {openMenu && (

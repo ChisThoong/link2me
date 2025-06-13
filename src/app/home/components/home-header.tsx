@@ -6,6 +6,10 @@ import { useSession, signOut } from 'next-auth/react';
 import AvatarInitials from './avatar-initials';
 import { Menu, MenuItem } from '@/components/ui/dropdown';
 import UserDropdown from './user-dropdown';
+import HomeNavTabs from './home-nav-tabs';
+import SharedLink from './shareable-link';
+import Logo from '@/components/logo';
+import { Link as LinkIcon } from 'lucide-react';
 
 interface UserData {
   username: string;
@@ -41,24 +45,35 @@ export default function HomeHeader() {
   };
 
   return (
-    <div className="flex items-center justify-between px-4 py-2 bg-white shadow-md">
-      <div className="text-xl font-bold">LOGO</div>
-
-      <div className="flex items-center gap-4">
-        <div className="bg-gray-100 px-4 py-2 rounded-md text-sm text-gray-700">
-          heylink.me/<span className="font-medium">{userData?.username || '...'}</span>
-        </div>
-
-        <UserDropdown
-          email={session?.user?.email || ''}
-          name={session?.user?.username || ''}
-          isPro={userData?.isPro}
-          expiredAt={userData?.expiredAt}
-          onLogout={handleLogout}
-          onUpgrade={() => alert("Nâng cấp Pro")}
-          onSupport={() => alert("Hỗ trợ")}
-        />
-      </div>
+    <div className="flex items-center justify-between px-4 py-2 bg-white shadow-md gap-4 flex-wrap">
+    {/* Logo */}
+    <div className="flex items-center gap-2 shrink-0">
+      <LinkIcon size={32} className="text-indigo-600" />
+      <span className="text-2xl md:text-3xl font-extrabold text-indigo-600 font-[Inter]">
+        Link2me
+      </span>
     </div>
+  
+    {/* Tabs */}
+    <div className="flex-1 justify-center hidden md:flex">
+      <HomeNavTabs />
+    </div>
+  
+    {/* Shared Link + Avatar */}
+    <div className="flex items-center gap-4 shrink-0">
+      <SharedLink username={userData?.username || 'yourname'} />
+      <UserDropdown
+        email={session?.user?.email || ''}
+        name={session?.user?.username || ''}
+        isPro={userData?.isPro}
+        expiredAt={userData?.expiredAt}
+        onLogout={handleLogout}
+        onUpgrade={() => alert("Nâng cấp Pro")}
+        onSupport={() => alert("Hỗ trợ")}
+      />
+    </div>
+  </div>
+  
+
   );
 }

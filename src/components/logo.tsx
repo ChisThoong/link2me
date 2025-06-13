@@ -5,10 +5,10 @@ import { Inter } from 'next/font/google';
 export default function Logo() {
   return (
     <div className="flex items-center gap-2">
-      <LinkIcon size={32} className="text-white dark:text-white" />
+      <LinkIcon size={32} className="text-white dark:text-white" /> 
       <span className="text-2xl md:text-3xl font-extrabold text-white dark:text-white font-[Inter]">
         Link2me
       </span>
-</div>
+    </div>
   );
 }
