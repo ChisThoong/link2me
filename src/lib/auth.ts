@@ -29,20 +29,29 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  // trong authOptions
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.username = user.username;
+
+        // Phân quyền admin (ví dụ: theo email)
+        token.role = user.email === 'thongntc@gmail.com' ? 'admin' : 'user';
       }
       return token;
     },
+
     async session({ session, token }) {
       session.user.id = token.id as string;
       session.user.username = token.username as string;
+
+      // Truyền role vào session để sử dụng ở client/server
+      session.user.role = token.role;
       return session;
     },
   },
+
   pages: {
     signIn: "/login",
   },

@@ -18,5 +18,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: 'User not found' }, { status: 404 });
   }
 
+  // Kiểm tra nếu hết hạn thì cập nhật isPro = false
+  const now = new Date();
+  if (user.expiredAt && new Date(user.expiredAt) < now) {
+    user.isPro = false;
+    await user.save();
+  }
   return NextResponse.json({ user });
 }

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import {
   Link,
   GalleryHorizontalEnd,
@@ -10,18 +9,22 @@ import {
 
 const tabs = [
   { id: 'links', label: 'Liên kết', icon: Link },
-  { id: 'social', label: 'Mạng XH', icon: Users },
-  { id: 'gallery', label: 'Danh mục', icon: GalleryHorizontalEnd },
-  { id: 'menu', label: 'Thực đơn', icon: ListFilter },
+  { id: 'social', label: 'Mạng xã hội', icon: Users },
+  { id: 'products', label: 'Sản phẩm', icon: GalleryHorizontalEnd },
+  // { id: 'menu', label: 'Thực đơn', icon: ListFilter },
 ];
 
-export default function HomeNavTabs() {
-  const [activeTab, setActiveTab] = useState('links');
+interface Props {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+  variant?: 'inline' | 'bottom';
+}
 
+export default function HomeNavTabs({ activeTab, setActiveTab }: Props) {
   return (
     <>
-      {/* 🖥️ PC & Tablet (>= md): Menu trên top */}
-      <div className="hidden md:flex justify-center gap-4 py-4 bg-white border-b">
+      {/* PC & Tablet (>= md): Menu trên top */}
+      <div className="hidden md:flex justify-center gap-4 py-4 bg-white">
         {tabs.map(({ id, label, icon: Icon }) => {
           const isActive = activeTab === id;
           return (
@@ -41,9 +44,9 @@ export default function HomeNavTabs() {
         })}
       </div>
 
-      {/* 📱 Mobile (< md): Menu dưới cùng */}
+      {/* Mobile (< md): Menu dưới cùng */}
       <div className="fixed bottom-0 inset-x-0 z-50 bg-white border-t shadow-md flex justify-around items-center py-2 md:hidden">
-        {tabs.map(({ id,label, icon: Icon }) => {
+        {tabs.map(({ id, label, icon: Icon }) => {
           const isActive = activeTab === id;
           return (
             <button
@@ -58,7 +61,7 @@ export default function HomeNavTabs() {
             </button>
           );
         })}
-      </div>
+      </div>     
     </>
   );
 }
