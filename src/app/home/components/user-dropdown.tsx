@@ -9,13 +9,13 @@ import {
   HelpCircle,
   Crown,
   Mail,
-} from 'lucide-react'; // bạn có thể thay đổi theo thư viện bạn đang dùng
+} from 'lucide-react'; 
 
 interface Props {
   email?: string;
   name?: string;
   isPro?: boolean;
-  expiredAt?: string; // ISO string
+  expiredAt?: string; 
   onLogout: () => void;
   onUpgrade?: () => void;
   onSupport?: () => void;

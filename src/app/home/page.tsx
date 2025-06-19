@@ -127,9 +127,9 @@ useEffect(() => {
           avatarUrl,
           bgImage: previewBgImage,
           bgColor: previewBgColor,
-          links: socialLinks.filter((s) => s.active),
-          customLinks: customLinks.filter((s) => s.active),
-          products: products.filter((s) => s.active),
+          links: socialLinks,       
+          customLinks: customLinks, 
+          products: products,      
         }),
       });
   
@@ -169,7 +169,7 @@ useEffect(() => {
             isPro={userData?.isPro}
             expiredAt={userData?.expiredAt}
             onLogout={handleLogout}
-            onUpgrade={() => alert('Nâng cấp Pro')}
+            onUpgrade={() => router.push('/upgrade')}
             onSupport={() => alert('Hỗ trợ')}
           />
         </div>
@@ -410,6 +410,7 @@ useEffect(() => {
                 <ProductLinksPanel
                   products={products}
                   setProducts={setProductLinks}
+                  isPro={userData?.isPro}
                 />
               )}
             </section>

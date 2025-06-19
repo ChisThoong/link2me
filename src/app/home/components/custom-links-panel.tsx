@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, Check, X } from 'lucide-react';
 import clsx from 'clsx';
 import { Switch } from '@headlessui/react';
 import ThumbnailUploader from './thumbnail-uploader';
@@ -25,15 +25,27 @@ interface Props {
 export default function CustomLinksPanel({ links, setLinks, isPro }: Props) {
   const [title, setTitle] = useState('');
   const [url, setUrl] = useState('');
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const router = useRouter();
 
-  const handleAdd = () => {
+  const handleAddOrUpdate = () => {
     if (!title || !url) return;
-    if (!isPro && links.length >= 3) {
-      toast.error('Bạn cần nâng cấp Pro để thêm nhiều liên kết hơn!');
-      return;
+
+    const newLink = { title, url, active: true };
+
+    if (editingIndex !== null) {
+      const updated = [...links];
+      updated[editingIndex] = { ...updated[editingIndex], ...newLink };
+      setLinks(updated);
+      setEditingIndex(null);
+    } else {
+      if (!isPro && links.length >= 3) {
+        toast.error('Bạn cần nâng cấp Pro để thêm nhiều liên kết hơn!');
+        return;
+      }
+      setLinks([...links, newLink]);
     }
-    setLinks([...links, { title, url, active: true }]);
+
     setTitle('');
     setUrl('');
   };
@@ -42,6 +54,11 @@ export default function CustomLinksPanel({ links, setLinks, isPro }: Props) {
     const updated = [...links];
     updated.splice(index, 1);
     setLinks(updated);
+    if (editingIndex === index) {
+      setEditingIndex(null);
+      setTitle('');
+      setUrl('');
+    }
   };
 
   const handleToggle = (index: number) => {
@@ -54,7 +71,13 @@ export default function CustomLinksPanel({ links, setLinks, isPro }: Props) {
     const current = links[index];
     setTitle(current.title);
     setUrl(current.url);
-    handleDelete(index);
+    setEditingIndex(index);
+  };
+
+  const handleCancelEdit = () => {
+    setTitle('');
+    setUrl('');
+    setEditingIndex(null);
   };
 
   return (
@@ -62,7 +85,7 @@ export default function CustomLinksPanel({ links, setLinks, isPro }: Props) {
       <h2 className="text-lg font-bold mb-4">Liên kết tùy chỉnh</h2>
 
       {/* Form nhập link */}
-      <div className="flex flex-col md:flex-row gap-3 mb-6">
+      <div className="flex flex-col md:flex-row gap-3 mb-6 items-start">
         <input
           type="text"
           placeholder="Tiêu đề"
@@ -77,12 +100,22 @@ export default function CustomLinksPanel({ links, setLinks, isPro }: Props) {
           onChange={(e) => setUrl(e.target.value)}
           className="border rounded-md px-3 py-2 text-sm w-full"
         />
-        <button
-          onClick={handleAdd}
-          className="bg-indigo-600 text-white px-4 py-1 rounded-md text-sm"
-        >
-          Thêm
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleAddOrUpdate}
+            className="bg-indigo-600 text-white px-4 py-1 rounded-md text-sm"
+          >
+            {editingIndex !== null ? 'Cập nhật' : 'Thêm'}
+          </button>
+          {editingIndex !== null && (
+            <button
+              onClick={handleCancelEdit}
+              className="bg-gray-300 text-gray-800 px-3 py-1 rounded-md text-sm"
+            >
+              Huỷ
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Danh sách links */}
@@ -95,15 +128,16 @@ export default function CustomLinksPanel({ links, setLinks, isPro }: Props) {
             <div className="flex gap-4 items-start">
               {/* Cột thumbnail */}
               <div className="w-[90px] flex-shrink-0 flex flex-col items-center gap-1">
-              <ThumbnailUploader
-                currentUrl={link.thumbnailUrl}
-                onUploaded={(url) => {
+                <ThumbnailUploader
+                  currentUrl={link.thumbnailUrl}
+                  onUploaded={(url) => {
                     const updated = [...links];
                     updated[index].thumbnailUrl = url;
                     setLinks(updated);
-                }}
+                  }}
                 />
               </div>
+
               {/* Cột nội dung chính */}
               <div className="flex-1">
                 <div className="flex items-center justify-between gap-3">
@@ -167,20 +201,19 @@ export default function CustomLinksPanel({ links, setLinks, isPro }: Props) {
             </div>
           </div>
         ))}
+
         {/* Nâng cấp Pro nếu chưa phải Pro */}
         {!isPro && links.length >= 3 && (
           <div className="p-4 text-center border rounded-md bg-yellow-50 text-yellow-800">
             <p className="text-sm font-medium mb-2">Bạn đang dùng bản miễn phí.</p>
             <button
-                 onClick={() => router.push('/upgrade')}
-                className="inline-block border border-yellow-500 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 text-sm font-semibold px-4 py-2 rounded-md transition shadow-sm"
-              >
-                Nâng cấp Pro để thêm nhiều liên kết
-              </button>
-
+              onClick={() => router.push('/upgrade')}
+              className="inline-block border border-yellow-500 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 text-sm font-semibold px-4 py-2 rounded-md transition shadow-sm"
+            >
+              Nâng cấp Pro để thêm nhiều liên kết
+            </button>
           </div>
         )}
-
       </div>
     </div>
   );

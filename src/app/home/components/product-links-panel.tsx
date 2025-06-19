@@ -19,9 +19,10 @@ interface ProductItem {
 interface Props {
   products: ProductItem[];
   setProducts: (value: ProductItem[]) => void;
+  isPro?: boolean;
 }
 
-export default function ProductLinksPanel({ products, setProducts }: Props) {
+export default function ProductLinksPanel({ products, setProducts, isPro }: Props) {
   const [form, setForm] = useState<ProductItem>({
     name: '',
     price: '',
@@ -31,6 +32,16 @@ export default function ProductLinksPanel({ products, setProducts }: Props) {
     layout: '2-column',
     active: true,
   });
+
+  // ❗ Nếu không phải Pro, chặn toàn bộ tính năng
+  if (!isPro) {
+    return (
+      <div className="border p-6 rounded-md bg-yellow-50 text-yellow-800 text-center">
+        <p className="text-sm font-semibold mb-2">Tính năng sản phẩm chỉ dành cho người dùng Pro.</p>
+        <p className="text-sm">Vui lòng nâng cấp tài khoản để sử dụng tính năng này.</p>
+      </div>
+    );
+  }
 
   const handleAdd = () => {
     if (!form.name || !form.link || !form.imageUrl || !form.price) return;
@@ -108,7 +119,10 @@ export default function ProductLinksPanel({ products, setProducts }: Props) {
           <option value="3-column">1 dòng 3 sản phẩm</option>
         </select>
 
-        <button onClick={handleAdd} className="bg-indigo-600 text-white px-4 py-2 rounded-md">
+        <button
+          onClick={handleAdd}
+          className="bg-indigo-600 text-white px-4 py-2 rounded-md"
+        >
           Thêm sản phẩm
         </button>
       </div>
